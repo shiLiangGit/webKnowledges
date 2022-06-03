@@ -1,0 +1,27 @@
+### 1、cache-control属性列表：
+
+| 字段名称                  | 说明                                                         |
+| ------------------------- | ------------------------------------------------------------ |
+| no-cache                  | 告知(代理)服务器不直接使用缓存，要求向原服务器发起请求       |
+| no-store                  | 所有内容都不会被保存到缓存或Internet临时文件中               |
+| max-age=delta-seconds     | 告知服务器客户端希望接收一个存在时间不大于delta-secconds秒的资源 |
+| max-stale[=delta-seconds] | 告知(代理)服务器客户端愿意接收一个超过缓存时间的资源，若有定义delta-seconds则为delta-seconds秒，若没有则为任意超出时间 |
+| min-fresh=delta-seconds   | 告知(代理)服务器客户端希望接收一个在小于delta-seconds秒内被更新过的资源 |
+| no-transform              | 告知(代理)服务器客户端希望获取实体数据没有被转换(比如压缩)过的资源 |
+| noly-if-cached            | 告知(代理)服务器客户端希望获取缓存的内容(若有),而不用向原服务器发去请求 |
+| cache-extension           | 自定义扩展值，若服务器不识别该值将被忽略掉                   |
+
+2、no-cache 和 no-store 的区别
+
+no-cache 和 no-store 用作控制缓存，被服务器通过响应头 Cache-Control 传递给客户端
+
+- no-store：永远都不要在客户端存储资源，永远都去原始服务器去获取资源。
+
+- no-cache：可以在客户端存储资源，**每次都必须去服务端做新鲜度校验**，来决定从服务端获取新的资源（200）还是使用客户端缓存（304）。也就是所谓的协商缓存。
+
+一般情况下对于 index.html 或者现代构建环境下不加 hash 的静态资源都需要设置 Cache-Control: no-cache，用来强制每次在服务器端的新鲜度校验。
+ 相当于一下缓存头
+
+```swift
+Cache-Control: max-age=0, must-revalidate
+```
